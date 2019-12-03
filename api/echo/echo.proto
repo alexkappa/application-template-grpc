@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package echo;
+
+import "google/api/annotations.proto";
+import "protoc-gen-swagger/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+  info: {
+    title: "Echo"
+    description: "A long description on the Echo service"
+    version: "1.0"
+    contact: {
+      url: "https://developer.alexkappa.com/api/echo"
+      email: "me@alexkappa.com"
+    }
+  }
+};
+
+message EchoRequest {
+  string value = 1;
+}
+
+message EchoResponse {
+  string value = 1;
+}
+   
+service Echo {
+  rpc Echo(EchoRequest) returns (EchoResponse) {
+    option (google.api.http) = {
+      post: "/v1/echo"
+      body: "*"
+    };
+  }
+}
