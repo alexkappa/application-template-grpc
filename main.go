@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/alexkappa/application-template-grpc/cmd"
+	"github.com/alexkappa/service-template-grpc/cmd"
 )
 
 func main() {

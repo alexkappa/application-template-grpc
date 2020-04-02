@@ -1,4 +1,4 @@
-module github.com/alexkappa/application-template-grpc
+module github.com/alexkappa/service-template-grpc
 
 go 1.12
 

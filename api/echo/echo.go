@@ -4,8 +4,8 @@ package echo
 import (
 	"context"
 
-	"github.com/alexkappa/application-template-grpc/api"
-	"github.com/alexkappa/application-template-grpc/pkg/store"
+	"github.com/alexkappa/service-template-grpc/api"
+	"github.com/alexkappa/service-template-grpc/pkg/store"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
 

@@ -35,7 +35,7 @@ package echo
 import (
 	"context"
 
-	"github.com/alexkappa/application-template-grpc/api"
+	"github.com/alexkappa/service-template-grpc/api"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
 

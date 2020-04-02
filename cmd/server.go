@@ -6,10 +6,10 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/alexkappa/application-template-grpc/api"
-	"github.com/alexkappa/application-template-grpc/api/echo"
-	"github.com/alexkappa/application-template-grpc/api/health"
-	"github.com/alexkappa/application-template-grpc/pkg/store"
+	"github.com/alexkappa/service-template-grpc/api"
+	"github.com/alexkappa/service-template-grpc/api/echo"
+	"github.com/alexkappa/service-template-grpc/api/health"
+	"github.com/alexkappa/service-template-grpc/pkg/store"
 )
 
 var cmdServer = &cobra.Command{
