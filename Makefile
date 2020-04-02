@@ -6,6 +6,9 @@ build: generate
 generate:
 	@go generate ./...
 
+test:
+	@go test ./...
+
 clean:
 	@rm -rf \
 		api/*/*.pb.go \
