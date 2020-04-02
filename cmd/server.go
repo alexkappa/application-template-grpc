@@ -2,15 +2,14 @@ package cmd
 
 import (
 	"context"
-	"fmt"
-	"os"
 
-	"github.com/alexkappa/grpc-demo/api"
-	"github.com/alexkappa/grpc-demo/api/echo"
-	"github.com/alexkappa/grpc-demo/api/health"
-	"github.com/alexkappa/grpc-demo/pkg/mongo"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/alexkappa/application-template-grpc/api"
+	"github.com/alexkappa/application-template-grpc/api/echo"
+	"github.com/alexkappa/application-template-grpc/api/health"
+	"github.com/alexkappa/application-template-grpc/pkg/store"
 )
 
 var cmdServer = &cobra.Command{
@@ -20,26 +19,18 @@ var cmdServer = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		addr, _ := cmd.Flags().GetString("addr")
-		mongoAddr, _ := cmd.Flags().GetString("mongo-addr")
 
 		ctx := context.Background()
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 
-		m, err := mongo.Client(ctx, mongoAddr)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(127)
-		}
-
 		server := api.NewServer(
 			api.WithAddress(addr),
-			api.WithContext(ctx),
-			api.WithMongo(m))
+			api.WithContext(ctx))
 
 		server.Register(
 			health.Service(),
-			echo.Service())
+			echo.Service(store.NewInMemoryEchoStore()))
 
 		return server.Run()
 	},
@@ -48,8 +39,6 @@ var cmdServer = &cobra.Command{
 func init() {
 	cmdRoot.AddCommand(cmdServer)
 	cmdServer.Flags().String("addr", ":11001", "address the server listens on")
-	cmdServer.Flags().String("mongo-addr", "mongodb://localhost:27017", "mongodb server address")
 
 	viper.BindPFlag("addr", cmdServer.PersistentFlags().Lookup("addr"))
-	viper.BindPFlag("addr", cmdServer.PersistentFlags().Lookup("mongo-addr"))
 }

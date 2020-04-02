@@ -4,7 +4,7 @@ package health
 import (
 	context "context"
 
-	"github.com/alexkappa/grpc-demo/api"
+	"github.com/alexkappa/application-template-grpc/api"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
 

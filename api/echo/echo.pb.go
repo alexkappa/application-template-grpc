@@ -109,7 +109,9 @@ func init() {
 	proto.RegisterType((*EchoResponse)(nil), "echo.EchoResponse")
 }
 
-func init() { proto.RegisterFile("echo.proto", fileDescriptor_08134aea513e0001) }
+func init() {
+	proto.RegisterFile("echo.proto", fileDescriptor_08134aea513e0001)
+}
 
 var fileDescriptor_08134aea513e0001 = []byte{
 	// 271 bytes of a gzipped FileDescriptorProto
@@ -134,11 +136,11 @@ var fileDescriptor_08134aea513e0001 = []byte{
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
-var _ grpc.ClientConn
+var _ grpc.ClientConnInterface
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion4
+const _ = grpc.SupportPackageIsVersion6
 
 // EchoClient is the client API for Echo service.
 //
@@ -148,10 +150,10 @@ type EchoClient interface {
 }
 
 type echoClient struct {
-	cc *grpc.ClientConn
+	cc grpc.ClientConnInterface
 }
 
-func NewEchoClient(cc *grpc.ClientConn) EchoClient {
+func NewEchoClient(cc grpc.ClientConnInterface) EchoClient {
 	return &echoClient{cc}
 }
 

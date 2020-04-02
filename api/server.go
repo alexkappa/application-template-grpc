@@ -5,14 +5,12 @@ import (
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Server struct {
-	addr  string
-	ctx   context.Context
-	mux   *runtime.ServeMux
-	mongo *mongo.Client
+	addr string
+	ctx  context.Context
+	mux  *runtime.ServeMux
 }
 
 func NewServer(options ...ServerOption) *Server {
@@ -45,11 +43,5 @@ func WithAddress(addr string) ServerOption {
 func WithContext(ctx context.Context) ServerOption {
 	return func(s *Server) {
 		s.ctx = ctx
-	}
-}
-
-func WithMongo(m *mongo.Client) ServerOption {
-	return func(s *Server) {
-		s.mongo = m
 	}
 }

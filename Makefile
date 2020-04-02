@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 build: generate
-	@go build -o bin/grpc-demo
+	@go build -o bin/service
 
 generate:
 	@go generate ./...

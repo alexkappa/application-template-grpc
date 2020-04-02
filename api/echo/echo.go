@@ -4,17 +4,30 @@ package echo
 import (
 	"context"
 
-	"github.com/alexkappa/grpc-demo/api"
+	"github.com/alexkappa/application-template-grpc/api"
+	"github.com/alexkappa/application-template-grpc/pkg/store"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
 
-type echoService struct{}
+type echoService struct {
+	store store.EchoStore
+}
 
-func Service() *echoService { return new(echoService) }
+// Service returns a new instance of the echo service.
+//
+// For illustration purposes a `store.EchoStore` is passed as an argument to the
+// Service.
+func Service(s store.EchoStore) api.Service {
+	return &echoService{s}
+}
 
 // Echo handles an echo request.
 func (s *echoService) Echo(ctx context.Context, req *EchoRequest) (*EchoResponse, error) {
-	return &EchoResponse{Value: req.Value}, nil
+	v, err := s.store.Echo(req.Value)
+	if err != nil {
+		return nil, err
+	}
+	return &EchoResponse{Value: v}, nil
 }
 
 // Register the service with gRPC gateway.

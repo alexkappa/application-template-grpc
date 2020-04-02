@@ -6,7 +6,7 @@ import (
 )
 
 var cmdRoot = &cobra.Command{
-	Use:   "grpc-demo",
+	Use:   "service",
 	Short: "A demonstration of gRPC services with gRPC gateway",
 }
 
