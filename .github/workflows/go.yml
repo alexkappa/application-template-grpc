@@ -13,6 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+    - name: Export GOPATH
+      run: |
+        mkdir -p $HOME/go
+        echo ::set-env name=GOPATH::$HOME/go
+
     - name: Set up Go 1.13
       uses: actions/setup-go@v1
       with:
