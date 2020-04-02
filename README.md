@@ -17,7 +17,7 @@ Each service is defined in its own package under the `api` directory. For exampl
 
 This package should include a `echo.proto` detailing the protocol buffer definition of the service as well as any necessary gRPC gateway options to expose the service as an HTTP handler as well.
 
-It should also contain an instruction to compile the protocol buffer definition to `*.go` and `*.swagger.json` files. The convention is to add the following code into a `echo.go` file in the same package.
+It should also contain an instruction to compile the protocol buffer definition to `*.pb.go`, `*.pb.gw.go` and `*.swagger.json` files. The convention is to add the following code into a `echo.go` file in the same package.
 
 ```Go
 //go:generate bash ../../scripts/protoc.sh *.proto
