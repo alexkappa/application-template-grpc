@@ -15,4 +15,4 @@ clean:
 		api/*/*.pb.gw.go \
 		api/*/*.swagger.json
 
-.PHONY: build generate clean
+.PHONY: build generate test clean
