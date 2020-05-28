@@ -1,10 +1,10 @@
-//go:generate bash ../../scripts/protoc.sh *.proto
 package health
 
 import (
 	context "context"
 
 	"github.com/alexkappa/service-template-grpc/api"
+	"github.com/alexkappa/service-template-grpc/api/health/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
 
@@ -14,13 +14,13 @@ func Service() *healthService {
 	return &healthService{}
 }
 
-func (s *healthService) Check(ctx context.Context, req *HealthCheckRequest) (*HealthCheckResponse, error) {
-	return &HealthCheckResponse{Status: HealthCheckResponse_SERVING}, nil
+func (s *healthService) Check(ctx context.Context, req *proto.HealthCheckRequest) (*proto.HealthCheckResponse, error) {
+	return &proto.HealthCheckResponse{Status: proto.HealthCheckResponse_SERVING}, nil
 }
 
 func (s *healthService) Register(ctx context.Context, mux *runtime.ServeMux) error {
-	return RegisterHealthHandlerServer(ctx, mux, s)
+	return proto.RegisterHealthHandlerServer(ctx, mux, s)
 }
 
-var _ HealthServer = (*healthService)(nil)
+var _ proto.HealthServer = (*healthService)(nil)
 var _ api.Service = (*healthService)(nil)

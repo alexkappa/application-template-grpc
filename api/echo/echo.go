@@ -1,10 +1,10 @@
-//go:generate bash ../../scripts/protoc.sh *.proto
 package echo
 
 import (
 	"context"
 
 	"github.com/alexkappa/service-template-grpc/api"
+	"github.com/alexkappa/service-template-grpc/api/echo/proto"
 	"github.com/alexkappa/service-template-grpc/pkg/store"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
@@ -22,18 +22,18 @@ func Service(s store.EchoStore) api.Service {
 }
 
 // Echo handles an echo request.
-func (s *echoService) Echo(ctx context.Context, req *EchoRequest) (*EchoResponse, error) {
+func (s *echoService) Echo(ctx context.Context, req *proto.EchoRequest) (*proto.EchoResponse, error) {
 	v, err := s.store.Echo(req.Value)
 	if err != nil {
 		return nil, err
 	}
-	return &EchoResponse{Value: v}, nil
+	return &proto.EchoResponse{Value: v}, nil
 }
 
 // Register the service with gRPC gateway.
 func (s *echoService) Register(ctx context.Context, mux *runtime.ServeMux) error {
-	return RegisterEchoHandlerServer(ctx, mux, s)
+	return proto.RegisterEchoHandlerServer(ctx, mux, s)
 }
 
-var _ EchoServer = (*echoService)(nil)
+var _ proto.EchoServer = (*echoService)(nil)
 var _ api.Service = (*echoService)(nil)

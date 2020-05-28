@@ -1,11 +1,11 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Echo",
-    "description": "A long description on the Echo service",
+    "title": "Service Template API",
+    "description": "A service template using gRPC and gRPC Gateway",
     "version": "1.0",
     "contact": {
-      "url": "https://developer.alexkappa.com/api/echo",
+      "url": "https://developer.alexkappa.com/api",
       "email": "me@alexkappa.com"
     }
   },
@@ -16,8 +16,48 @@
     "application/json"
   ],
   "paths": {
+    "/healthz": {
+      "get": {
+        "operationId": "Health_Check",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/healthHealthCheckResponse"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "service",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Health"
+        ]
+      }
+    },
     "/v1/echo": {
       "post": {
+        "summary": "Echo",
+        "description": "The Echo operation enables users to probe the server with a value and have the value returned verbatim.",
         "operationId": "Echo_Echo",
         "responses": {
           "200": {
@@ -25,6 +65,14 @@
             "schema": {
               "$ref": "#/definitions/echoEchoResponse"
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
           },
           "default": {
             "description": "An unexpected error response",
@@ -45,24 +93,66 @@
         ],
         "tags": [
           "Echo"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "echo"
+            ]
+          }
         ]
       }
     }
   },
   "definitions": {
+    "HealthCheckResponseServingStatus": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "SERVING",
+        "NOT_SERVING"
+      ],
+      "default": "UNKNOWN"
+    },
     "echoEchoRequest": {
       "type": "object",
+      "example": {
+        "value": "hello!"
+      },
       "properties": {
         "value": {
-          "type": "string"
+          "type": "string",
+          "description": "The value to echo"
         }
-      }
+      },
+      "description": "The echo request",
+      "title": "Echo request",
+      "required": [
+        "value"
+      ]
     },
     "echoEchoResponse": {
       "type": "object",
+      "example": {
+        "value": "hello!"
+      },
       "properties": {
         "value": {
-          "type": "string"
+          "type": "string",
+          "description": "The echoed value"
+        }
+      },
+      "description": "The echo response",
+      "title": "Echo response",
+      "required": [
+        "value"
+      ]
+    },
+    "healthHealthCheckResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/HealthCheckResponseServingStatus"
         }
       }
     },
@@ -100,6 +190,17 @@
             "$ref": "#/definitions/protobufAny"
           }
         }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "OAuth2": {
+      "type": "oauth2",
+      "flow": "accessCode",
+      "authorizationUrl": "https://api.example.com/oauth/authorize",
+      "tokenUrl": "https://api.example.com/oauth/token",
+      "scopes": {
+        "echo": "Echo"
       }
     }
   }

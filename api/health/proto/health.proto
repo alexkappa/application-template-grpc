@@ -19,6 +19,8 @@ syntax = "proto3";
 
 package health;
 
+option go_package = "api/health/proto";
+
 import "google/api/annotations.proto";
 
 message HealthCheckRequest {

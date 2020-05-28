@@ -9,8 +9,6 @@ For the official instructions for installing `grpc` and `grpc-gateway` check out
 - https://grpc.io/docs/quickstart/go/
 - https://github.com/grpc-ecosystem/grpc-gateway
 
-For convenience, [`protoc-install.sh`](scripts/protoc-install.sh) can be used to download all `protoc` related includes that are used during the generation process.
-
 ## Conventions
 
 Each service is defined in its own package under the `api` directory. For example to create a new Echo service, you would create a package `api/echo`.
