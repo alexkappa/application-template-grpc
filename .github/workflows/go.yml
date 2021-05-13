@@ -27,8 +27,6 @@ jobs:
 
     - name: Check out code
       uses: actions/checkout@v2
-      with:
-        path: "service-template-grpc"
     
     - uses: bufbuild/buf-setup-action@v0.1.0
       with:
@@ -41,6 +39,7 @@ jobs:
           github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
           google.golang.org/protobuf/cmd/protoc-gen-go \
           google.golang.org/grpc/cmd/protoc-gen-go-grpc
+
 
     - name: Generate
       run: make generate
