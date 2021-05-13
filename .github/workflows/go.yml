@@ -16,8 +16,8 @@ jobs:
     - name: Export GOPATH, GOBIN
       run: |
         mkdir -p $HOME/go
-        echo ::set-env name=GOPATH::$HOME/go
-        echo ::set-env name=GOBIN::$HOME/go/bin
+        echo "GOPATH=$HOME/go" >> $GITHUB_ENV
+        echo "GOBIN=$HOME/go/bin" >> $GITHUB_ENV
 
     - name: Set up Go 1.13
       uses: actions/setup-go@v1
