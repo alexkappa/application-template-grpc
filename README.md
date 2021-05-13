@@ -1,4 +1,6 @@
-# Application Template - gRPC
+# Service Template - gRPC 
+
+[![Build](https://github.com/alexkappa/service-template-grpc/actions/workflows/build.yml/badge.svg)](https://github.com/alexkappa/service-template-grpc/actions/workflows/build.yml)
 
 This is an application template for a Go service using gRPC and gRPC Gateway.
 
