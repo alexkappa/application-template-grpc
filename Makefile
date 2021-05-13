@@ -1,5 +1,4 @@
 SHELL := /bin/bash
-PROTO_FILES := $(shell ls api/proto/*.proto api/*/proto/*.proto)
 
 build: generate
 	@go build -o bin/service
