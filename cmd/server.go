@@ -15,30 +15,33 @@ import (
 var cmdServer = &cobra.Command{
 	Use:     "server",
 	Aliases: []string{"serve", "run", "start"},
-	Short:   "A brief description of your command",
+	Short:   "Starts the server",
 	RunE: func(cmd *cobra.Command, args []string) error {
 
-		addr, _ := cmd.Flags().GetString("addr")
+		httpAddr, _ := cmd.Flags().GetString("http-addr")
+		rpcAddr, _ := cmd.Flags().GetString("rpc-addr")
 
 		ctx := context.Background()
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 
 		server := api.NewServer(
-			api.WithAddress(addr),
+			api.WithHTTPAddress(httpAddr),
+			api.WithRPCAddress(rpcAddr),
 			api.WithContext(ctx))
 
 		server.Register(
 			health.Service(),
-			echo.Service(store.NewInMemoryEchoStore()))
+			echo.Service(store.NewInMemoryKVStore()))
 
-		return server.Run()
+		return server.Serve()
 	},
 }
 
 func init() {
 	cmdRoot.AddCommand(cmdServer)
-	cmdServer.Flags().String("addr", ":11001", "address the server listens on")
+	cmdServer.Flags().String("http-addr", ":11001", "address the http server listens on")
+	cmdServer.Flags().String("rpc-addr", ":11010", "address the rpc server listens on")
 
 	viper.BindPFlag("addr", cmdServer.PersistentFlags().Lookup("addr"))
 }

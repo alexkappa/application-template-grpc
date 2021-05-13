@@ -1,0 +1,109 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "proto/echo/v1/echo.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Echo"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/echo": {
+      "post": {
+        "summary": "The Echo operation enables users to probe the server with a value and have \nthe value returned back unchanged.",
+        "operationId": "Echo_Echo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1EchoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1EchoRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Echo"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "typeUrl": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1EchoRequest": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "title": "The value to echo"
+        }
+      },
+      "title": "The payload used when issuing a request to the echo method"
+    },
+    "v1EchoResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "title": "The echoed value"
+        },
+        "count": {
+          "type": "string",
+          "format": "int64",
+          "title": "Number of times the value was echoed"
+        }
+      }
+    }
+  }
+}

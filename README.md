@@ -34,7 +34,7 @@ import (
 	"context"
 
 	"github.com/alexkappa/service-template-grpc/api"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
 type echoService struct{}

@@ -17,9 +17,9 @@
 
 syntax = "proto3";
 
-package health;
+package health.v1;
 
-option go_package = "api/health/proto";
+option go_package = "github.com/alexkappa/service-template-grpc/gen/proto/health/v1";
 
 import "google/api/annotations.proto";
 

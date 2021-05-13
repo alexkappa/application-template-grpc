@@ -15,7 +15,7 @@ func Execute() error {
 }
 
 func init() {
-	// cmdRoot.PersistentFlags().BoolP("version", "v", false, "print version and exit")
+	cmdRoot.PersistentFlags().BoolP("version", "v", false, "print version and exit")
 	// cmdRoot.PersistentFlags().StringVarP(&userLicense, "license", "l", "", "name of license for the project")
 	// cmdRoot.PersistentFlags().Bool("viper", true, "use Viper for configuration")
 	viper.BindPFlag("version", cmdRoot.PersistentFlags().Lookup("version"))

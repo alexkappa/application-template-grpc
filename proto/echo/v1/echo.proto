@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package echo.v1;
+
+option go_package = "github.com/alexkappa/service-template-grpc/gen/proto/echo/v1";
+
+import "google/api/annotations.proto";
+
+// The payload used when issuing a request to the echo method
+message EchoRequest {
+  // The value to echo
+  string value = 1;
+}
+
+message EchoResponse {
+  // The echoed value
+  string value = 1;
+  // Number of times the value was echoed
+  int64 count = 2;
+}
+
+// Echo allows users to send a value to the server and have the value returned 
+// back unchanged.
+service Echo {
+  // The Echo operation enables users to probe the server with a value and have 
+  // the value returned back unchanged.
+  rpc Echo(EchoRequest) returns (EchoResponse) {
+    option (google.api.http) = {
+      post: "/v1/echo"
+      body: "*"
+    };
+  }
+}

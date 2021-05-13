@@ -1,0 +1,8 @@
+version: v1beta1
+name: buf.build/alexkappa/proto # github.com/alexkappa/service-template-grpc
+deps:
+  - buf.build/beta/googleapis
+  - buf.build/grpc-ecosystem/grpc-gateway
+lint:
+  use:
+  - DEFAULT
