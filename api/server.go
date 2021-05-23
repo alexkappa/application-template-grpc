@@ -2,16 +2,19 @@ package api
 
 import (
 	"context"
+	"errors"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
 
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_tags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-
-	akctx "github.com/alexkappa/service-template-grpc/pkg/context"
 )
 
 type Server struct {
@@ -21,6 +24,7 @@ type Server struct {
 	grpcAddr    string
 	grpc        *grpc.Server
 	ctx         context.Context
+	cancel      context.CancelFunc
 	logger      *log.Logger
 }
 
@@ -28,17 +32,24 @@ func NewServer(options ...ServerOption) *Server {
 	s := &Server{
 		httpAddr: ":11001",
 		grpcAddr: ":11010",
-		ctx:      context.Background(),
 		logger:   log.New(),
+		ctx:      context.Background(),
 	}
 	s.logger.SetFormatter(&log.JSONFormatter{})
 	for _, fn := range options {
 		fn(s)
 	}
+	s.ctx, s.cancel = signal.NotifyContext(s.ctx, os.Interrupt)
 	s.grpc = grpc.NewServer(
-		grpc.ChainUnaryInterceptor(
-			unaryInterceptorRequestId(),
-			unaryInterceptorlogging(s.logger),
+		grpc_middleware.WithUnaryServerChain(
+			grpc_recovery.UnaryServerInterceptor(),
+			grpc_tags.UnaryServerInterceptor(),
+			grpc_logrus.UnaryServerInterceptor(log.NewEntry(s.logger)),
+		),
+		grpc_middleware.WithStreamServerChain(
+			grpc_recovery.StreamServerInterceptor(),
+			grpc_tags.StreamServerInterceptor(),
+			grpc_logrus.StreamServerInterceptor(log.NewEntry(s.logger)),
 		),
 	)
 	s.httpHandler = runtime.NewServeMux()
@@ -56,26 +67,26 @@ func (s *Server) Register(services ...Service) {
 }
 
 func (s *Server) Serve() error {
-	hupCh := make(chan os.Signal, 1)
-	signal.Notify(hupCh, os.Interrupt)
 
-	errCh := make(chan error)
+	err := make(chan error)
 
-	go s.serveHttp(errCh)
-	go s.serveRpc(errCh)
+	go s.serveHttp(err)
+	go s.serveRpc(err)
 
 	select {
-	case err := <-errCh:
+	case e := <-err:
 		s.stopHttp()
 		s.stopRpc()
-		return err
-	case <-hupCh:
-		s.logger.Print("HUP signal received")
-		s.stopHttp()
-		s.stopRpc()
+		return e
+	case <-s.ctx.Done():
+		if errors.Is(s.ctx.Err(), context.Canceled) {
+			s.logger.Print("SIGINT received")
+			s.stopHttp()
+			s.stopRpc()
+			return nil
+		}
+		return s.ctx.Err()
 	}
-
-	return nil
 }
 
 func (s *Server) serveHttp(errCh chan<- error) {
@@ -94,7 +105,7 @@ func (s *Server) stopHttp() {
 func (s *Server) serveRpc(errCh chan<- error) {
 	l, err := net.Listen("tcp", s.grpcAddr)
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		s.logger.Fatalf("failed to listen: %v", err)
 	}
 	s.logger.Printf("gRPC server listening on %s", s.grpcAddr)
 	err = s.grpc.Serve(l)
@@ -131,30 +142,5 @@ func WithContext(ctx context.Context) ServerOption {
 func WithLogger(logger *log.Logger) ServerOption {
 	return func(s *Server) {
 		s.logger = logger
-	}
-}
-
-func unaryInterceptorRequestId() grpc.UnaryServerInterceptor {
-	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-		return handler(akctx.WithRequestID(ctx), req)
-	}
-}
-
-func unaryInterceptorlogging(logger *log.Logger) grpc.UnaryServerInterceptor {
-	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-
-		res, err := handler(ctx, req)
-		if err != nil {
-			return nil, err
-		}
-
-		logger.
-			WithField("req_id", akctx.RequestID(ctx)).
-			WithField("req", req).
-			WithField("res", res).
-			WithField("method", info.FullMethod).
-			Print("remote procedure call")
-
-		return res, err
 	}
 }
